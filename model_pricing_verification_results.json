@@ -1,0 +1,20 @@
+[
+  {
+    "model": "mistral-medium-latest",
+    "prompt_tokens": 9,
+    "completion_tokens": 54,
+    "total_tokens": 63,
+    "response_time": 0.7552828788757324,
+    "cost_estimate": 0.00046169999999999995,
+    "expected_cost": 0.00046169999999999995
+  },
+  {
+    "model": "mistral-small-latest",
+    "prompt_tokens": 21,
+    "completion_tokens": 55,
+    "total_tokens": 76,
+    "response_time": 0.6687631607055664,
+    "cost_estimate": 0.000186,
+    "expected_cost": 0.000186
+  }
+]

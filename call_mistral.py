@@ -49,14 +49,22 @@ with Mistral(api_key=api_key) as client:
     counter_active = False
     counter_thread.join()
 
-    # Log token usage
-    log_token_usage(response, "mistral-medium-latest")
-    
     # End timing
     end_time = time.time()
     
     # Calculate and log the duration
     duration = end_time - start_time
+
+    # Log token usage with additional metadata
+    log_token_usage(
+        response,
+        "mistral-medium-latest",
+        response_time=duration,
+        cache_hit=False,  # You could add caching logic here
+        input_length=len(args.prompt),
+        temperature=0.7,  # Default temperature, could be parameterized
+        max_tokens=None   # Could be parameterized
+    )
     print(f"\nRequest took {duration:.2f} seconds to complete.")
     
     # Print the received message
