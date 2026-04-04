@@ -42,81 +42,60 @@ def log_token_usage(response, model_name, log_dir="logs", response_time=None, ca
 # Rest of the file remains the same...
 def calculate_cost_estimate(prompt_tokens, completion_tokens, model_name):
     """Estimate cost based on token usage and model pricing"""
-    # Mistral model pricing (per 1M tokens) - based on provided data
+    # Mistral model pricing (per 1M tokens) - updated (note)
     model_pricing = {
-        # Flagship multimodal and multilingual models
-        "mistral-large-latest": {"prompt": 0.5, "completion": 1.5},  # $0.50 and $1.50 per 1M tokens
-
-        # Mistral Small 4 - A new standard for multimodal, reasoning-optimized models
+        # Latest Mistral 3 models ((note))
+        "mistral-large-3-latest": {"prompt": 2.0, "completion": 6.0},  # $2.00 and $6.00 per 1M tokens
+        "mistral-medium-3-latest": {"prompt": 0.4, "completion": 2.0},  # $0.40 and $2.00 per 1M tokens
         "mistral-small-4-latest": {"prompt": 0.15, "completion": 0.6},  # $0.15 and $0.60 per 1M tokens
 
-        # Mistral Medium 3 - State-of-the-art performance. Simplified enterprise deployments. Cost-efficient.
-        "mistral-medium-3-latest": {"prompt": 0.4, "completion": 2.0},  # $0.40 and $2.00 per 1M tokens
-
-        # Mistral Small 3.2 - SOTA. Multimodal. Multilingual. Apache 2.0.
-        "mistral-small-3.2-latest": {"prompt": 0.1, "completion": 0.3},  # $0.10 and $0.30 per 1M tokens
-
-        # Devstral 2 - Enhanced model for advanced coding agents.
+        # Latest Devstral models ((note))
         "devstral-2-latest": {"prompt": 0.4, "completion": 2.0},  # $0.40 and $2.00 per 1M tokens
-
-        # Devstral Small 2 - The best open-source model for coding agents.
         "devstral-small-2-latest": {"prompt": 0.1, "completion": 0.3},  # $0.10 and $0.30 per 1M tokens
 
-        # Codestral - Lightweight, fast, and proficient in over 80 programming languages.
+        # Latest Codestral model ((note))
         "codestral-latest": {"prompt": 0.3, "completion": 0.9},  # $0.30 and $0.90 per 1M tokens
 
-        # Leanstral - First open-source code agent for Lean 4.
-        "leanstral-latest": {"prompt": 0.0, "completion": 0.0},  # Free API endpoint
-
-        # Magistral Medium - Thinking model excelling in domain-specific, transparent, and multilingual reasoning.
+        # Latest Magistral models ((note))
         "magistral-medium-latest": {"prompt": 2.0, "completion": 5.0},  # $2.00 and $5.00 per 1M tokens
-
-        # Magistral Small - Thinking model excelling in domain-specific, transparent, and multilingual reasoning.
         "magistral-small-latest": {"prompt": 0.5, "completion": 1.5},  # $0.50 and $1.50 per 1M tokens
 
-        # Ministral 3 models - Best-in-class frontier AI to the edge.
+        # Latest Ministral 3 models ((note))
         "ministral-3-3b-latest": {"prompt": 0.1, "completion": 0.1},  # $0.10 and $0.10 per 1M tokens
         "ministral-3-8b-latest": {"prompt": 0.15, "completion": 0.15},  # $0.15 and $0.15 per 1M tokens
         "ministral-3-14b-latest": {"prompt": 0.2, "completion": 0.2},  # $0.20 and $0.20 per 1M tokens
 
-        # Voxtral TTS - State-of-the-art text-to-speech.
-        "voxtral-tts-latest": {"prompt": 0.016, "completion": 0.016},  # $0.016 per 1k characters (approximated)
-
-        # Voxtral transcription models
-        "voxtral-mini-transcribe-2-latest": {"prompt": 0.003, "completion": 0.003},  # $0.003 per minute
-        "voxtral-realtime-latest": {"prompt": 0.006, "completion": 0.006},  # $0.006 per minute
-        "voxtral-small-latest": {"prompt": 0.004, "completion": 0.3},  # $0.004 (audio) / $0.1 (text) per minute, $0.30 per 1M tokens
-        "voxtral-mini-latest": {"prompt": 0.001, "completion": 0.04},  # $0.001 (audio) / $0.04 (text) per minute, $0.04 per 1M tokens
-
-        # Pixtral models - Vision-capable models
+        # Latest Pixtral models ((note))
         "pixtral-large-latest": {"prompt": 2.0, "completion": 6.0},  # $2.00 and $6.00 per 1M tokens
         "pixtral-12b-latest": {"prompt": 0.15, "completion": 0.15},  # $0.15 and $0.15 per 1M tokens
 
-        # Mistral NeMo - State-of-the-art Mistral model trained specifically for code tasks.
-        "mistral-nemo-latest": {"prompt": 0.15, "completion": 0.15},  # $0.15 and $0.15 per 1M tokens
+        # Latest embedding models ((note))
+        "codestral-embed-latest": {"prompt": 0.15, "completion": 0.15},  # $0.15 per 1M tokens
+        "mistral-embed-latest": {"prompt": 0.1, "completion": 0.1},  # $0.10 per 1M tokens
 
-        # Mistral 7B - A 7B transformer model, fast-deployed and easily customisable.
+        # Latest agent and moderation models ((note))
+        "agent-api-latest": {"prompt": 2.7, "completion": 8.1},  # Model cost per M token + Tool call
+        "mistral-moderation-latest": {"prompt": 0.1, "completion": 0.1},  # $0.10 per 1M tokens
+
+        # Legacy models (still supported)
+        "mistral-large-latest": {"prompt": 0.5, "completion": 1.5},  # $0.50 and $1.50 per 1M tokens
+        "mistral-medium-latest": {"prompt": 2.7, "completion": 8.1},  # $2.70 and $8.10 per 1M tokens
+        "mistral-small-latest": {"prompt": 1.0, "completion": 3.0},  # $1.00 and $3.00 per 1M tokens
         "mistral-7b-latest": {"prompt": 0.25, "completion": 0.25},  # $0.25 and $0.25 per 1M tokens
-
-        # Mixtral models - Sparse Mixture-of-Experts models
         "mixtral-8x7b-latest": {"prompt": 0.7, "completion": 0.7},  # $0.70 and $0.70 per 1M tokens
         "mixtral-8x22b-latest": {"prompt": 2.0, "completion": 6.0},  # $2.00 and $6.00 per 1M tokens
 
-        # Embedding models
-        "codestral-embed-latest": {"prompt": 0.15, "completion": 0.15},  # $0.15 per 1M tokens (input only for embeddings)
-        "mistral-embed-latest": {"prompt": 0.1, "completion": 0.1},  # $0.10 per 1M tokens (input only for embeddings)
-
-        # Agent API - Enhances AI with built-in tools
-        "agent-api-latest": {"prompt": 2.7, "completion": 8.1},  # Model cost per M token + Tool call
+        # Specialized models
+        "leanstral-latest": {"prompt": 0.0, "completion": 0.0},  # Free API endpoint
+        "voxtral-tts-latest": {"prompt": 0.016, "completion": 0.016},  # $0.016 per 1k characters
+        "voxtral-mini-transcribe-2-latest": {"prompt": 0.003, "completion": 0.003},  # $0.003 per minute
+        "voxtral-realtime-latest": {"prompt": 0.006, "completion": 0.006},  # $0.006 per minute
+        "voxtral-small-latest": {"prompt": 0.004, "completion": 0.3},  # Mixed pricing
+        "voxtral-mini-latest": {"prompt": 0.001, "completion": 0.04},  # Mixed pricing
 
         # Classifier models
-        "mistral-moderation-latest": {"prompt": 0.1, "completion": 0.1},  # $0.10 per 1M tokens
         "classifier-api-model-8b-latest": {"prompt": 0.1, "completion": 0.1},  # $0.10 per 1M tokens
         "classifier-api-model-3b-latest": {"prompt": 0.04, "completion": 0.04},  # $0.04 per 1M tokens
-
-        # Default fallback pricing (mistral-medium-latest)
-        "mistral-medium-latest": {"prompt": 2.7, "completion": 8.1},  # $2.70 and $8.10 per 1M tokens
-        "mistral-small-latest": {"prompt": 1.0, "completion": 3.0},  # $1.00 and $3.00 per 1M tokens
     }
 
     pricing = model_pricing.get(model_name, {"prompt": 2.7, "completion": 8.1})
@@ -331,7 +310,7 @@ def run_dashboard(log_dir="logs"):
         selected_row = st.selectbox(
             "Select a log entry to view details",
             range(len(filtered_df)),
-            format_func=lambda x: f"Entry {x + 1}: {filtered_df.iloc[x]['timestamp']}"
+            format_func=lambda x: f"Entry {x + 1}: {filtered_df.iloc[x]['timestamp']} | Model: {filtered_df.iloc[x]['model']}"
         )
         
         st.subheader("Prompt")
